@@ -1,0 +1,6 @@
+c:\users\derek\documents\visual studio 2015\Projects\ThesisV1\ThesisV1\bin\Debug\ThesisV1.exe.config
+c:\users\derek\documents\visual studio 2015\Projects\ThesisV1\ThesisV1\bin\Debug\ThesisV1.exe
+c:\users\derek\documents\visual studio 2015\Projects\ThesisV1\ThesisV1\bin\Debug\ThesisV1.pdb
+c:\users\derek\documents\visual studio 2015\Projects\ThesisV1\ThesisV1\obj\Debug\ThesisV1.exe
+c:\users\derek\documents\visual studio 2015\Projects\ThesisV1\ThesisV1\obj\Debug\ThesisV1.pdb
+c:\users\derek\documents\visual studio 2015\Projects\ThesisV1\ThesisV1\obj\Debug\ThesisV1.csprojResolveAssemblyReference.cache
