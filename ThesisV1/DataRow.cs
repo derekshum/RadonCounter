@@ -46,6 +46,15 @@ namespace ThesisV1
             }
         }
 
+        public void print()
+        {
+            Console.WriteLine(trigger + "\t" + stamp + "\t" + channel + "\t" + index + "\t" + type + "\t" + delay + "\t" + factor + "\t" + rate + "\t" + count);
+            foreach(float dataItem in data)
+            {
+                Console.Write(dataItem + "\t");
+            }
+        }
+
 
     }
 }

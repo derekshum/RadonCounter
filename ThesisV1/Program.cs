@@ -21,6 +21,7 @@ namespace ThesisV1
 
                     /* Test of DataRow */
                     DataRow test = new DataRow(sr.ReadLine());
+                    test.print();
 					/* while ((input = sr.ReadLine()) != null)
 					{
 						currentLine = input.Split('\t');
