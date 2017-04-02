@@ -16,9 +16,17 @@ namespace ThesisV1
 				string input;
 				using (StreamReader sr = new StreamReader(@"C:\Users\derek\Documents\Visual Studio 2015\Projects\ThesisV1\TestFile.txt"))
 				{
+					string[] headers = sr.ReadLine().Split('\t');
+					string[] currentLine = sr.ReadLine().Split('\t');
+                    //TODO: processing of numerical data for first and subsequent lines
 					while ((input = sr.ReadLine()) != null)
 					{
-						Console.WriteLine(input);
+						currentLine = input.Split('\t');
+                        /*Processing of numerical data*/
+                        foreach(string linePart in currentLine)
+                        {
+
+                        }
 					}
 				}
 				Console.ReadLine();
