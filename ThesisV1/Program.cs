@@ -11,30 +11,36 @@ namespace ThesisV1
 	{
 		static void Main(string[] args)
 		{
-			try
-			{
-				string input;
-				using (StreamReader sr = new StreamReader(@"C:\Users\derek\Documents\Visual Studio 2015\Projects\ThesisV1\TestFile.txt"))
-				{
-					string[] headers = sr.ReadLine().Split('\t');
-                    string[] currentLine;
+            analyzeSingleExport();
+            Console.ReadLine();
+        }
 
-                    /* Test of DataRow */
-                    DataRow test = new DataRow(sr.ReadLine());
-                    test.print();
-					/* while ((input = sr.ReadLine()) != null)
+        static void analyzeSingleExport()
+        {
+            try
+            {
+                string docAddress = @"C:\Users\derek\Documents\Visual Studio 2015\Projects\ThesisV1\TestFile.txt";
+                string input;
+
+                var lineCount = File.ReadLines(docAddress).Count(); //count number of lines in input
+                DataRow[] Data = new DataRow[lineCount - 1]; //initialize array of dataRows that contains all data excep the header row
+
+                using (StreamReader sr = new StreamReader(docAddress))
+                {
+                    string[] headers = sr.ReadLine().Split('\t');
+                    int i = 0;
+                    while ((input = sr.ReadLine()) != null)
 					{
-						currentLine = input.Split('\t');
-
-					}*/
-				}
-				Console.ReadLine();
-			}
-			catch (Exception e)
-			{
-				Console.WriteLine("The file could not be read:");
-				Console.WriteLine(e.Message);
-			}
-		}
+                        Data[i] = new DataRow(input);
+                        i++;
+					}
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("The file could not be read:");
+                Console.WriteLine(e.Message);
+            }
+        }
 	}
 }
