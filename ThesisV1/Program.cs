@@ -17,30 +17,50 @@ namespace ThesisV1
 
         static void analyzeSingleExport()
         {
+            /*Import Data*/
+            string docAddress = @"C:\Users\derek\Documents\Visual Studio 2015\Projects\ThesisV1\TestFile.txt";
+            string input;
+
+            var lineCount = File.ReadLines(docAddress).Count(); //count number of lines in input
+            DataRow[] AllRows = new DataRow[lineCount - 1]; //initialize array of dataRows that contains all data excep the header row
+
             try
             {
-                string docAddress = @"C:\Users\derek\Documents\Visual Studio 2015\Projects\ThesisV1\TestFile.txt";
-                string input;
-
-                var lineCount = File.ReadLines(docAddress).Count(); //count number of lines in input
-                DataRow[] Data = new DataRow[lineCount - 1]; //initialize array of dataRows that contains all data excep the header row
-
                 using (StreamReader sr = new StreamReader(docAddress))
                 {
                     string[] headers = sr.ReadLine().Split('\t');
                     int i = 0;
-                    while ((input = sr.ReadLine()) != null)
+
+                    /*fixing*/
+                    input = sr.ReadLine();
+                    Console.WriteLine(input);
+                    string[] splits = input.Split('\t');
+                    string temp;
+                    foreach(string splited in splits)
+                    {
+                        temp = splited + "AAA";
+                        Console.WriteLine(temp);
+                    }                    
+                    AllRows[i] = new DataRow(input);
+
+                    /*while ((input = sr.ReadLine()) != null)
 					{
-                        Data[i] = new DataRow(input);
+                        AllRows[i] = new DataRow(input);
                         i++;
-					}
+					}*/
                 }
             }
             catch (Exception e)
             {
                 Console.WriteLine("The file could not be read:");
                 Console.WriteLine(e.Message);
+                return;
             }
+            /*Analyze Data*/
+            /*Try analyzing first row first, finding rise and drop times*/
+            Console.WriteLine(AllRows[0].data.Length);
+            Console.WriteLine(AllRows[0].data.Min());
+            Console.WriteLine(AllRows[0].data.Max());
         }
 	}
 }
