@@ -45,14 +45,41 @@ namespace ThesisV1
                 Console.WriteLine(e.Message);
                 return;
             }
+
             /*Analyze Data*/
-            
+            DetectLevelChanges(AllRows);
             
         }
 
         static void DetectLevelChanges(DataRow[] AllRows)
         {
-
+            float dataMin = (float)(3.4 * Math.Pow(10, 34));   // min value in AllRows' data, initialized as the max float value
+            float dataMax = (float)(-3.4 * Math.Pow(10, 34));    // max value in AllRows' data, initialized as the min float value
+            /* find the minimum and maximum in AllRows' data*/
+            foreach (DataRow row in AllRows) 
+            {
+                dataMin = Math.Min(dataMin, row.data.Min());
+                dataMax = Math.Max(dataMax, row.data.Max());
+            }
+            float cutoffPoint = (float)((3.0 * dataMin + dataMax) / 4.0);    // point we want to note the signal falling beneath
+            float prev = AllRows[0].data[0];    // value of the previous data point chronologically
+            short[] dipCount = new short[AllRows.Length]; // number of times the current row of data dips below the cutoffPoint
+            int i = 0;  // row index for dipCount
+            /* note signal going to min every time it drops below 3/4 the way betweent he minimum and the maximum*/
+            foreach (DataRow row in AllRows)
+            {
+                dipCount[i] = 0;
+                foreach (float point in row.data)
+                {
+                    if (prev > cutoffPoint && point < cutoffPoint)
+                    {
+                        dipCount[i]++;
+                    }
+                    prev = point;
+                }
+                Console.WriteLine(dipCount[i]);
+                i++;
+            }   
         }
 
         static void Test(DataRow[] AllRows)  //debugging method
