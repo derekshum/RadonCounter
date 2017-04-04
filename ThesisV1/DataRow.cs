@@ -24,7 +24,8 @@ namespace ThesisV1
         {
             try
             {
-                string[] currentLine = input.Split('\t');
+                char delimiter = '\t';
+                string[] currentLine = input.Split(delimiter);
                 trigger = Int32.Parse(currentLine[0]);
                 stamp = currentLine[1];
                 channel = Int16.Parse(currentLine[2]);

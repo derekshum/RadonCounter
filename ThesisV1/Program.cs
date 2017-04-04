@@ -9,7 +9,9 @@ namespace ThesisV1
 {
 	class Program
 	{
-		static void Main(string[] args)
+        const string docAddress = @"C:\Users\derek\Documents\Visual Studio 2015\Projects\ThesisV1\TestFile.txt";
+        const char delimiter = '\t';
+        static void Main(string[] args)
 		{
             analyzeSingleExport();
             Console.ReadLine();
@@ -18,7 +20,6 @@ namespace ThesisV1
         static void analyzeSingleExport()
         {
             /*Import Data*/
-            string docAddress = @"C:\Users\derek\Documents\Visual Studio 2015\Projects\ThesisV1\TestFile.txt";
             string input;
 
             var lineCount = File.ReadLines(docAddress).Count(); //count number of lines in input
@@ -28,18 +29,14 @@ namespace ThesisV1
             {
                 using (StreamReader sr = new StreamReader(docAddress))
                 {
-                    string[] headers = sr.ReadLine().Split('\t');
+                    string[] headers = sr.ReadLine().Split(delimiter);   
                     int i = 0;
 
-                    /*fixing*/
-                    input = sr.ReadLine();
-                    AllRows[i] = new DataRow(input);
-
-                    /*while ((input = sr.ReadLine()) != null)
+                    while ((input = sr.ReadLine()) != null)
 					{
                         AllRows[i] = new DataRow(input);
                         i++;
-					}*/
+					}
                 }
             }
             catch (Exception e)
@@ -49,10 +46,13 @@ namespace ThesisV1
                 return;
             }
             /*Analyze Data*/
-            /*Try analyzing first row first, finding rise and drop times*/
-            Console.WriteLine(AllRows[0].data.Length);
-            Console.WriteLine(AllRows[0].data.Min());
-            Console.WriteLine(AllRows[0].data.Max());
+            AllRows[50].print();
+            
+        }
+
+        static void DetectLevelChanges(DataRow[] AllRows)
+        {
+
         }
 	}
 }
