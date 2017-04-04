@@ -33,14 +33,6 @@ namespace ThesisV1
 
                     /*fixing*/
                     input = sr.ReadLine();
-                    Console.WriteLine(input);
-                    string[] splits = input.Split('\t');
-                    string temp;
-                    foreach(string splited in splits)
-                    {
-                        temp = splited + "AAA";
-                        Console.WriteLine(temp);
-                    }                    
                     AllRows[i] = new DataRow(input);
 
                     /*while ((input = sr.ReadLine()) != null)

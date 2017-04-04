@@ -31,23 +31,13 @@ namespace ThesisV1
                 index = Int32.Parse(currentLine[3]);
                 type = Int16.Parse(currentLine[4]);
                 delay = Single.Parse(currentLine[5]);
-                Console.WriteLine(delay);    //debug
-                Console.WriteLine("raw factor: " + currentLine[6]);    //debug
                 factor = Int16.Parse(currentLine[6]);
-                Console.WriteLine(factor);    //debug
-                Console.WriteLine("raw rate: " + currentLine[7]);    //debug
                 rate = Single.Parse(currentLine[7]);
-                Console.WriteLine(rate);    //debug
-                Console.WriteLine("raw count: " + currentLine[8]);    //debug
                 count = Int16.Parse(currentLine[8]);
-                Console.WriteLine(count);   //debug
-                Console.WriteLine("rawdata1: " + currentLine[9]);    //debug
-                Console.WriteLine("rawdata2: " + currentLine[10]);    //debug
                 data = new float[count];
-                for (int i = 0; i < count; i++) // assuming count is accurate
+                for (int i = 0; i < count; i++) // assuming count is accurate (it is, so blank cells are ignored)
                 {
                     data[i] = Single.Parse(currentLine[i + numNonDataCells]);
-                    Console.WriteLine(data[i]); //debug
                 }
             }
             catch
