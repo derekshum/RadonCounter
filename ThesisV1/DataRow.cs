@@ -8,6 +8,8 @@ namespace ThesisV1
 {
     class DataRow
     {
+        public const char delimiter = '\t';
+        public const short numNonDataCells = 9;
         public int trigger;
         public string stamp;   // time, could be converted
         public short channel;
@@ -18,13 +20,11 @@ namespace ThesisV1
         public float rate;
         public short count;
         public float[] data;
-        public const short numNonDataCells = 9;
 
         public DataRow(string input)
         {
             try
             {
-                char delimiter = '\t';
                 string[] currentLine = input.Split(delimiter);
                 trigger = Int32.Parse(currentLine[0]);
                 stamp = currentLine[1];

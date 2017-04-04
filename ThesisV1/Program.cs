@@ -46,13 +46,18 @@ namespace ThesisV1
                 return;
             }
             /*Analyze Data*/
-            AllRows[50].print();
+            
             
         }
 
         static void DetectLevelChanges(DataRow[] AllRows)
         {
 
+        }
+
+        static void Test(DataRow[] AllRows)  //debugging method
+        {
+            AllRows[50].print();
         }
 	}
 }
