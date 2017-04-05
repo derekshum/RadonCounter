@@ -54,7 +54,52 @@ namespace ThesisV1
         static void LucasCellDetection(DataRow[] AllRows)
         {
             /* simplest Lucas Cell detection is simply marking when a point is above a threshold */
-            //float[] sortedFirstRow = AllRows[0].Data;
+            List<string> incidences = new List<string>();
+
+            /*find median value*/
+            float median = 0;   // assumes signal in zeroed, can be set more analytically if necessary
+
+            /* find every peak that goes from below the lower cutoff to above the upper cutoff */
+            float spread = 50;  // minimum expected height of peaks given sampling rate and uncertainty
+            float upperCutOff = median + spread;
+            float lowerCutOff = (float)(0.75 * median + 0.25 * upperCutOff);
+            float prev = AllRows[0].Data[0];    // used for analysis, records the previous value
+            Boolean exitLow = false;    // set to true when the signal rises from below the lowerCutOff to above it on the last point
+            //Boolean exitMed = false;    // set to true when the signal rises from below the upperCutOff to above it on the last point
+
+            foreach (DataRow row in AllRows)
+            {
+                foreach(float point in row.Data)
+                {
+                    /* allow for two data points to hit a rising peak */
+                    if (point <= lowerCutOff) {/* do nothing */}   // put first to optimize analysis
+                    else if ()  // point >= lowerCutOff
+                    {
+                        if (point > upperCutOff)
+                        {
+
+                        }
+                        else if (prev < lowerCutOff)
+                        {
+                            exitLow = true;
+                        }
+
+                        
+                    }
+                    
+                    else if (exitLow)
+                    {
+                        if (point > upperCutOff)
+                        {
+                            incidences.Add(row.Stamp);
+                        }
+                        exitLow = false;
+                    }
+                    
+                    prev = point;
+                }
+            }
+            
         }
 
         static void DetectLevelChanges(DataRow[] AllRows)
