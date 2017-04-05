@@ -8,37 +8,37 @@ namespace ThesisV1
 {
     class DataRow
     {
-        public const char delimiter = '\t';
-        public const short numNonDataCells = 9;
-        public int trigger;
-        public string stamp;   // time, could be converted
-        public short channel;
-        public int index;
-        public short type;
-        public float delay;
-        public short factor;
-        public float rate;
-        public short count;
-        public float[] data;
+        public const char Delimiter = '\t';
+        public const short NumNonDataCells = 9;
+        public int Trigger;
+        public string Stamp;   // time, could be converted
+        public short Channel;
+        public int Index;
+        public short Type;
+        public float Delay;
+        public short Factor;
+        public float Rate;
+        public short Count;
+        public float[] Data;
 
         public DataRow(string input)
         {
             try
             {
-                string[] currentLine = input.Split(delimiter);
-                trigger = Int32.Parse(currentLine[0]);
-                stamp = currentLine[1];
-                channel = Int16.Parse(currentLine[2]);
-                index = Int32.Parse(currentLine[3]);
-                type = Int16.Parse(currentLine[4]);
-                delay = Single.Parse(currentLine[5]);
-                factor = Int16.Parse(currentLine[6]);
-                rate = Single.Parse(currentLine[7]);
-                count = Int16.Parse(currentLine[8]);
-                data = new float[count];
-                for (int i = 0; i < count; i++) // assuming count is accurate (it is, so blank cells are ignored)
+                string[] currentLine = input.Split(Delimiter);
+                Trigger = Int32.Parse(currentLine[0]);
+                Stamp = currentLine[1];
+                Channel = Int16.Parse(currentLine[2]);
+                Index = Int32.Parse(currentLine[3]);
+                Type = Int16.Parse(currentLine[4]);
+                Delay = Single.Parse(currentLine[5]);
+                Factor = Int16.Parse(currentLine[6]);
+                Rate = Single.Parse(currentLine[7]);
+                Count = Int16.Parse(currentLine[8]);
+                Data = new float[Count];
+                for (int i = 0; i < Count; i++) // assuming count is accurate (it is, so blank cells are ignored)
                 {
-                    data[i] = Single.Parse(currentLine[i + numNonDataCells]);
+                    Data[i] = Single.Parse(currentLine[i + NumNonDataCells]);
                 }
             }
             catch
@@ -50,8 +50,8 @@ namespace ThesisV1
 
         public void print()
         {
-            Console.WriteLine(trigger + "\t" + stamp + "\t" + channel + "\t" + index + "\t" + type + "\t" + delay + "\t" + factor + "\t" + rate + "\t" + count);
-            foreach(float dataItem in data)
+            Console.WriteLine(Trigger + "\t" + Stamp + "\t" + Channel + "\t" + Index + "\t" + Type + "\t" + Delay + "\t" + Factor + "\t" + Rate + "\t" + Count);
+            foreach(float dataItem in Data)
             {
                 Console.Write(dataItem + "\t");
             }

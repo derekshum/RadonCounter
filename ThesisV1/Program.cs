@@ -9,7 +9,7 @@ namespace ThesisV1
 {
 	class Program
 	{
-        const string docAddress = @"C:\Users\derek\Documents\Visual Studio 2015\Projects\ThesisV1\TestFile.txt";
+        const string docAddress = @"C:\Users\derek\Documents\Visual Studio 2015\Projects\ThesisV1\ExpDecay.txt";
         const char delimiter = '\t';
         static void Main(string[] args)
 		{
@@ -47,8 +47,14 @@ namespace ThesisV1
             }
 
             /*Analyze Data*/
-            DetectLevelChanges(AllRows);
+            LucasCellDetection(AllRows);
             
+        }
+
+        static void LucasCellDetection(DataRow[] AllRows)
+        {
+            /* simplest Lucas Cell detection is simply marking when a point is above a threshold */
+            //float[] sortedFirstRow = AllRows[0].Data;
         }
 
         static void DetectLevelChanges(DataRow[] AllRows)
@@ -58,18 +64,18 @@ namespace ThesisV1
             /* find the minimum and maximum in AllRows' data*/
             foreach (DataRow row in AllRows) 
             {
-                dataMin = Math.Min(dataMin, row.data.Min());
-                dataMax = Math.Max(dataMax, row.data.Max());
+                dataMin = Math.Min(dataMin, row.Data.Min());
+                dataMax = Math.Max(dataMax, row.Data.Max());
             }
             float cutoffPoint = (float)((3.0 * dataMin + dataMax) / 4.0);    // point we want to note the signal falling beneath
-            float prev = AllRows[0].data[0];    // value of the previous data point chronologically
+            float prev = AllRows[0].Data[0];    // value of the previous data point chronologically
             short[] dipCount = new short[AllRows.Length]; // number of times the current row of data dips below the cutoffPoint
             int i = 0;  // row index for dipCount
             /* note signal going to min every time it drops below 3/4 the way betweent he minimum and the maximum*/
             foreach (DataRow row in AllRows)
             {
                 dipCount[i] = 0;
-                foreach (float point in row.data)
+                foreach (float point in row.Data)
                 {
                     if (prev > cutoffPoint && point < cutoffPoint)
                     {
