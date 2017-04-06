@@ -13,7 +13,10 @@ namespace ThesisV1
         const char delimiter = '\t';
         static void Main(string[] args)
 		{
+            System.Diagnostics.Stopwatch timer = new System.Diagnostics.Stopwatch();
             analyzeSingleExport();
+            Console.WriteLine(timer.ElapsedTicks);
+            timer.Stop();
             Console.ReadLine();
         }
 
@@ -65,28 +68,39 @@ namespace ThesisV1
             float lowerCutOff = (float)(0.75 * median + 0.25 * upperCutOff);
             float prev = AllRows[0].Data[0];    // used for analysis, records the previous value
             Boolean exitLow = false;    // set to true when the signal rises from below the lowerCutOff to above it on the last point
-            //Boolean exitMed = false;    // set to true when the signal rises from below the upperCutOff to above it on the last point
-
+            short pointsAboveLow = 0;   // count of the number of points in a row that have been above the low range without a point in low
+            
             foreach (DataRow row in AllRows)
             {
                 foreach(float point in row.Data)
                 {
                     /* allow for two data points to hit a rising peak */
-                    if (point <= lowerCutOff) {/* do nothing */}   // put first to optimize analysis
-                    else if ()  // point >= lowerCutOff
+                    if (point <= lowerCutOff)
+                    {
+                        pointsAboveLow = 0;
+                    }
+                    else if (point > lowerCutOff)  // point >= lowerCutOff
                     {
                         if (point > upperCutOff)
                         {
-
+                            if(prev < lowerCutOff || exitLow)
+                            {
+                                incidences.Add(row.Stamp);  // record the time of a detected Radon Incidence if rising fast enough
+                            }
+                            else
+                            {
+                                pointsAboveLow++;   // not a new peak, record how many points in a row this is
+                            }
                         }
                         else if (prev < lowerCutOff)
                         {
                             exitLow = true;
                         }
-
-                        
+                        else // point < upperCutOff && prev > lowerCutoff
+                        {
+                            pointsAboveLow++;   // not a new peak, record how many points in a row this is
+                        }
                     }
-                    
                     else if (exitLow)
                     {
                         if (point > upperCutOff)
@@ -95,9 +109,13 @@ namespace ThesisV1
                         }
                         exitLow = false;
                     }
-                    
-                    prev = point;
+                    prev = point;   // record point for comparisson to next point if needed
                 }
+            }
+            /* debugging prints */
+            foreach(string s in incidences)
+            {
+                Console.Write(s+'\t');
             }
             
         }
