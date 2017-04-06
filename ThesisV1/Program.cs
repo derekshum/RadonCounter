@@ -14,8 +14,9 @@ namespace ThesisV1
         static void Main(string[] args)
 		{
             System.Diagnostics.Stopwatch timer = new System.Diagnostics.Stopwatch();
+            timer.Start();
             analyzeSingleExport();
-            Console.WriteLine(timer.ElapsedTicks);
+            Console.WriteLine("ticks: " + timer.ElapsedTicks);
             timer.Stop();
             Console.ReadLine();
         }
@@ -34,7 +35,6 @@ namespace ThesisV1
                 {
                     string[] headers = sr.ReadLine().Split(delimiter);   
                     int i = 0;
-
                     while ((input = sr.ReadLine()) != null)
 					{
                         AllRows[i] = new DataRow(input);
@@ -63,12 +63,13 @@ namespace ThesisV1
             float median = 0;   // assumes signal in zeroed, can be set more analytically if necessary
 
             /* find every peak that goes from below the lower cutoff to above the upper cutoff */
-            float spread = 50;  // minimum expected height of peaks given sampling rate and uncertainty
+            const float spread = 50;  // minimum expected height of peaks given sampling rate and uncertainty
+            const short streakLengthToAlert = 10;   // number of points in a row above the low range that will trigger an alert
             float upperCutOff = median + spread;
             float lowerCutOff = (float)(0.75 * median + 0.25 * upperCutOff);
             float prev = AllRows[0].Data[0];    // used for analysis, records the previous value
             Boolean exitLow = false;    // set to true when the signal rises from below the lowerCutOff to above it on the last point
-            short pointsAboveLow = 0;   // count of the number of points in a row that have been above the low range without a point in low
+            short pointsAboveLow = 0;   // count of the number of points in a row that have been above the low range without a point in low  
             
             foreach (DataRow row in AllRows)
             {
@@ -111,11 +112,15 @@ namespace ThesisV1
                     }
                     prev = point;   // record point for comparisson to next point if needed
                 }
+                if (pointsAboveLow >= streakLengthToAlert)
+                {
+                    incidences.Add("a" + row.Stamp);   // adding "a" and then the time stamp notes that the current row has a possible changed baseline
+                }
             }
             /* debugging prints */
             foreach(string s in incidences)
             {
-                Console.Write(s+'\t');
+                Console.Write("incident at " + s + '\n');
             }
             
         }
