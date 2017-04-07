@@ -9,29 +9,32 @@ namespace ThesisV1
 {
 	class Program
 	{
-        const string docAddress = @"C:\Users\derek\Documents\Visual Studio 2015\Projects\ThesisV1\ExpDecay.txt";
+        const string inputDocAddress = @"C:\Users\derek\Documents\Visual Studio 2015\Projects\ThesisV1\ExpDecay.txt";
+        const string outputDocAddress = @"C:\Users\derek\Documents\Visual Studio 2015\Projects\ThesisV1\Output.txt";
         const char delimiter = '\t';
         static void Main(string[] args)
 		{
             System.Diagnostics.Stopwatch timer = new System.Diagnostics.Stopwatch();
             timer.Start();
-            analyzeSingleExport();
+            var output = analyzeSingleExport();
+            System.IO.File.WriteAllLines(outputDocAddress, output);
             Console.WriteLine("ticks: " + timer.ElapsedTicks);
             timer.Stop();
             Console.ReadLine();
         }
 
-        static void analyzeSingleExport()
+        static List<string> analyzeSingleExport()
         {
             /*Import Data*/
             string input;
+            
 
-            var lineCount = File.ReadLines(docAddress).Count(); //count number of lines in input
+            var lineCount = File.ReadLines(inputDocAddress).Count(); //count number of lines in input
             DataRow[] AllRows = new DataRow[lineCount - 1]; //initialize array of dataRows that contains all data excep the header row
 
             try
             {
-                using (StreamReader sr = new StreamReader(docAddress))
+                using (StreamReader sr = new StreamReader(inputDocAddress))
                 {
                     string[] headers = sr.ReadLine().Split(delimiter);   
                     int i = 0;
@@ -46,15 +49,49 @@ namespace ThesisV1
             {
                 Console.WriteLine("The file could not be read:");
                 Console.WriteLine(e.Message);
-                return;
             }
 
             /*Analyze Data*/
-            LucasCellDetection(AllRows);
+            return LucasCellDetection(AllRows);
             
         }
 
-        static void LucasCellDetection(DataRow[] AllRows)
+        static List<string> BiPoDetection(DataRow[] AllRows)
+        {
+            var peaks = new List<string>();
+
+            const float lowerCutoff = 10;   // mV, lower bound on noise consideration
+            const float midCutoff = 20;     // mV, minimum for classification as a low peak, upper bound on noise
+            const float highCutoff = 50;    // mV, minimum for classification as a high peak
+            float prev = AllRows[0].Data[0];    // used for analysis, records the previous value;
+
+            foreach (DataRow row in AllRows)
+            {
+                foreach (float point in row.Data)
+                {
+                    if (point < lowerCutoff)
+                    {
+
+                    }
+                    else if(point < midCutoff)
+                    {
+
+                    }
+                    else if(point < highCutoff)
+                    {
+                        
+                    }
+                    else // point > highCutoff
+                    {
+
+                    }
+
+                }
+            }
+            return peaks;
+        }
+
+        static List<string> LucasCellDetection(DataRow[] AllRows)
         {
             /* simplest Lucas Cell detection is simply marking when a point is above a threshold */
             List<string> incidences = new List<string>();
@@ -65,10 +102,10 @@ namespace ThesisV1
             /* find every peak that goes from below the lower cutoff to above the upper cutoff */
             const float spread = 50;  // minimum expected height of peaks given sampling rate and uncertainty
             const short streakLengthToAlert = 10;   // number of points in a row above the low range that will trigger an alert
-            float upperCutOff = median + spread;
-            float lowerCutOff = (float)(0.75 * median + 0.25 * upperCutOff);
+            float upperCutoff = median + spread;
+            float lowerCutoff = (float)(0.75 * median + 0.25 * upperCutoff);
             float prev = AllRows[0].Data[0];    // used for analysis, records the previous value
-            Boolean exitLow = false;    // set to true when the signal rises from below the lowerCutOff to above it on the last point
+            Boolean exitLow = false;    // set to true when the signal rises from below the lowerCutoff to above it on the last point
             short pointsAboveLow = 0;   // count of the number of points in a row that have been above the low range without a point in low  
             
             foreach (DataRow row in AllRows)
@@ -76,15 +113,15 @@ namespace ThesisV1
                 foreach(float point in row.Data)
                 {
                     /* allow for two data points to hit a rising peak */
-                    if (point <= lowerCutOff)
+                    if (point <= lowerCutoff)
                     {
                         pointsAboveLow = 0;
                     }
-                    else if (point > lowerCutOff)  // point >= lowerCutOff
+                    else if (point > lowerCutoff)  // point >= lowerCutoff
                     {
-                        if (point > upperCutOff)
+                        if (point > upperCutoff)
                         {
-                            if(prev < lowerCutOff || exitLow)
+                            if(prev < lowerCutoff || exitLow)
                             {
                                 incidences.Add(row.Stamp);  // record the time of a detected Radon Incidence if rising fast enough
                             }
@@ -93,18 +130,18 @@ namespace ThesisV1
                                 pointsAboveLow++;   // not a new peak, record how many points in a row this is
                             }
                         }
-                        else if (prev < lowerCutOff)
+                        else if (prev < lowerCutoff)
                         {
                             exitLow = true;
                         }
-                        else // point < upperCutOff && prev > lowerCutoff
+                        else // point < upperCutoff && prev > lowerCutoff
                         {
                             pointsAboveLow++;   // not a new peak, record how many points in a row this is
                         }
                     }
                     else if (exitLow)
                     {
-                        if (point > upperCutOff)
+                        if (point > upperCutoff)
                         {
                             incidences.Add(row.Stamp);
                         }
@@ -122,6 +159,7 @@ namespace ThesisV1
             {
                 Console.Write("incident at " + s + '\n');
             }
+            return incidences;
             
         }
 
