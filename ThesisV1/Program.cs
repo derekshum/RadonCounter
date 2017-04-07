@@ -63,30 +63,110 @@ namespace ThesisV1
             const float lowerCutoff = 10;   // mV, lower bound on noise consideration
             const float midCutoff = 20;     // mV, minimum for classification as a low peak, upper bound on noise
             const float highCutoff = 50;    // mV, minimum for classification as a high peak
-            float prev = AllRows[0].Data[0];    // used for analysis, records the previous value;
+            bool consistent = false;    // indicates whether the last point was larger that its previous one- only set when a point above lowest
+            bool threeConsistent = false;   // indicates whether next fall shouldn't indicate a peak because zone was stayed in too long
+            bool falling = false;   //indicates whether a peak has been recorded already
+            short zone = 1; // voltage location of last point: zone 1 is below lower, zone 2 is between lower and mid, etc
+            short pointsAboveLow = 0;   // count of the number of points in a row that have been above the low range without a point in low  
+            long counter = 0;   // time since counter was updated
+            string lastTime = "";
 
             foreach (DataRow row in AllRows)
             {
+                if (!(row.Stamp == lastTime)) // add new time stamp and reset counter if new data input
+                {
+                    peaks.Add(row.Stamp);
+                    counter = 1;
+                }
+                else
+                {
+                    counter++;
+                }
                 foreach (float point in row.Data)
                 {
-                    if (point < lowerCutoff)
+                    if (point < lowerCutoff)    // in zone 1
                     {
-
+                        zone = 1;
+                        consistent = false;
+                        threeConsistent = false;
+                        falling = false;
                     }
-                    else if(point < midCutoff)
+                    else if (point < midCutoff) // in zone 2 (noise)
                     {
-
+                        if (zone > 2)   //falling 
+                        {
+                            if (!threeConsistent)
+                            { 
+                                peaks.Add((counter - 1).ToString() + "\tlow");
+                            }
+                            falling = true;
+                            consistent = false;
+                            threeConsistent = false;
+                        }
+                        else if (zone == 2)
+                        {
+                            if (consistent) // 3 points in the same row at a time- error
+                            {
+                                threeConsistent = true;
+                            }
+                            consistent = true;
+                        }
+                        else // rising peak
+                        {
+                            consistent = false;
+                            threeConsistent = false;
+                            // do nothing, will record peak later
+                        }
+                        zone = 2; 
                     }
-                    else if(point < highCutoff)
+                    else if (point < highCutoff)    // in zone 3 (low peak)
                     {
-                        
+                        if (zone > 3)   //falling 
+                        {
+                            if (!threeConsistent)
+                            {
+                                peaks.Add((counter - 1).ToString() + "\thigh");
+                            }
+                            falling = true;
+                            consistent = false;
+                            threeConsistent = false;
+                        }
+                        else if (zone == 3)
+                        {
+                            if (consistent) // 3 points in the same row at a time- error
+                            {
+                                threeConsistent = true;
+                            }
+                            consistent = true;
+                        }
+                        else // rising peak
+                        {
+                            consistent = false;
+                            threeConsistent = false;
+                            // do nothing, will record peak later
+                        }
+                        zone = 3;
                     }
-                    else // point > highCutoff
+                    else // in zone 4 (high peak)
                     {
-
+                        if (zone == 4)  // consistent peak
+                        {
+                            if (consistent) // 3 points in the same row at a time- error
+                            {
+                                threeConsistent = true;
+                            }
+                            consistent = true;
+                        }
+                        else // rising peak
+                        {
+                            consistent = false;
+                            threeConsistent = false;
+                            // do nothing, will record peak later
+                        }
+                        zone = 4;
                     }
-
-                }
+                    counter++;
+                }                
             }
             return peaks;
         }
